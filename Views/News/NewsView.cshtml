@@ -1,0 +1,8 @@
+﻿@using Shop.Models
+
+@model List<PriceProduct>
+
+@foreach(var item in Model)
+{
+    await Html.RenderPartialAsync("Itemnews", item);
+}

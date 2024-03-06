@@ -1,0 +1,19 @@
+﻿@using Shop.Models
+
+@model List<Product>
+
+@foreach(var item in Model)
+{
+    <div>
+        <h1>@item.Name</h1>
+        <p>@item.Description</p>
+        <p>Закупочная цена товара:@item.Price</p>
+        <p>@item.PathImg</p>
+
+        <form asp-action="DeleteProduct" 
+              method="post"
+              asp-route-id="@item.Name">
+            <input type="submit" value="Удалить" />
+        </form>
+    </div>
+}
