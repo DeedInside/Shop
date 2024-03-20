@@ -1,5 +1,7 @@
-﻿@using Shop.BDContext
-
+﻿@using Shop.Models
+@{
+    List<Product> val = ViewBag.Prod;
+}
 <div>
     <form method="post" asp-action="AddProd">
         <label>название товара:</label><br />
@@ -7,12 +9,12 @@
         <label>Описание товара:</label><br />
         <input type="text" name="Description" /><br />
         <label>Цена товара:</label><br />
-        <input type="text" name="price" /><br />
+        <input type="text" name="price"/><br />
 
         <input type="submit" value="добавить товар" />
     </form>
 </div>
 
-@await Html.PartialAsync("ProductView",ApplicationContext.ListProducts)
+@await Html.PartialAsync("ProductView", val)
             
             

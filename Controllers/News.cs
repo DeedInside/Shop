@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shop.BDContext;
 using Shop.Models;
 
@@ -6,39 +7,47 @@ namespace Shop.Controllers
 {
     public class News : Controller
     {
-        public IActionResult NewsView()
+        ApplicationContext _context;
+        public News(ApplicationContext context) 
         {
-            return View(ApplicationContext.priceProducts);
+            _context = context;
         }
-        public IActionResult AddItemProduct()
+        public async Task<IActionResult> NewsView()
         {
+            var value = await _context.PriceProducts.ToListAsync();
+
+            return View( value);
+        }
+        public async Task<IActionResult> AddItemProduct()
+        {
+            List<Product> products = await _context.Products.ToListAsync();
+            ViewBag.Prod = products;
             return View("AddItemProduct");
         }
         [HttpPost]
-        public IActionResult AddProd(string Name, string Description, string Price) 
+        public async Task<IActionResult> AddProd(string Name, string Description, string Price) 
         {
-            ApplicationContext.ListProducts.Add(
-                new Product(
+             _context.Products.Add(new Product(
                     Name,
                     Convert.ToDouble(Price),
                     Description,
                     "None"
-                    )
-            {
+                    ));
+            await _context.SaveChangesAsync();
 
-            });
-            return View("AddItemProduct", ApplicationContext.ListProducts);
+            return RedirectToAction("AddItemProduct");
         }
         [HttpPost]
         public IActionResult DeleteProduct(string id)
         {
-                var element = ApplicationContext.ListProducts.FirstOrDefault(p => p.Name == id);
+            var element = _context.Products.FirstOrDefault(p => p.Name == id);
             if(element != null)
             {
-                ApplicationContext.ListProducts.Remove(element);
+                _context.Products.Remove(element);
+                _context.SaveChanges();
             }
 
-            return View("AddItemProduct", ApplicationContext.ListProducts);
+            return RedirectToAction("AddItemProduct");
         }
     }
 }
